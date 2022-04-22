@@ -1,39 +1,42 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-
-	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"net/http"
+	"sync"
 )
 
+var RWLock sync.RWMutex
+
 func main() {
-	// Open may just validate its arguments without creating a connection to the database.
-	// To verify that the data source name is valid, call Ping.
-	// func Open(driverName, dataSourceName string) (*DB, error)
-	// dataSourceName: username:password@protocol(address)/dbname?param=value
-	//db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/testdb")
+	// db := database{"shoes": 50, "socks": 5}
+	mux := http.NewServeMux()
+	mux.Handle("/", http.FileServer(http.Dir("static")))
+	mux.HandleFunc("/loginHandler", loginHandler)
+	mux.HandleFunc("/Register", Register)
+	mux.HandleFunc("/RegisterHandler", RegisterHandler)
+	// mux.HandleFunc("/addUser", addUser)
+	// mux.HandleFunc("/deleteUser", deleteUser)
+	// mux.HandleFunc("/updateUserinfo", updateUserinfo)
+	// mux.HandleFunc("/findDonors", findDonors)
+	// mux.HandleFunc("listDonors", listDonors)
+	log.Fatal(http.ListenAndServe(":8000", mux)) // Listens for curl communication of localhost
+}
 
-	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/testdb")
+func loginHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "loginHandler Page")
+	req.ParseForm()
+	username := req.FormValue("username")
+	password := req.FormValue("password")
+	fmt.Fprintln(w, "username:", username, "password:", password)
+}
 
-	if err != nil {
-		fmt.Println("error validating sql.Open arguments")
-		panic(err.Error())
-	}
-	defer db.Close()
+// type database map[string]dollars // database of items with their polar prices
+func Register(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "Register Page")
+}
 
-	err = db.Ping()
-	if err != nil {
-		fmt.Println("error verifying connection with db.Ping")
-		panic(err.Error())
-	}
-
-	// func (db *DB) Query(query string, args ...interface{}) (*Rows, error)
-	insert, err := db.Query("INSERT INTO `testdb`.`students` (`id`, `firstname`, `lastname`) VALUES ('3', 'Carl', 'Jones');")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer insert.Close()
-
-	fmt.Println("Successful Connection to Database!")
+func RegisterHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "RegisterHandler Page")
 }
