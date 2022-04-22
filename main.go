@@ -16,11 +16,11 @@ func main() {
 	mux.HandleFunc("/loginHandler", loginHandler)
 	mux.HandleFunc("/Register", Register)
 	mux.HandleFunc("/RegisterHandler", RegisterHandler)
-	// mux.HandleFunc("/addUser", addUser)
-	// mux.HandleFunc("/deleteUser", deleteUser)
-	// mux.HandleFunc("/updateUserinfo", updateUserinfo)
-	// mux.HandleFunc("/findDonors", findDonors)
-	// mux.HandleFunc("listDonors", listDonors)
+	mux.HandleFunc("/addUser", addUser)
+	mux.HandleFunc("/deleteUser", deleteUser)
+	mux.HandleFunc("/updateUserinfo", updateUserinfo)
+	mux.HandleFunc("/findDonors", findDonors)
+	mux.HandleFunc("listDonors", listDonors)
 	log.Fatal(http.ListenAndServe(":8000", mux)) // Listens for curl communication of localhost
 }
 
@@ -39,4 +39,24 @@ func Register(w http.ResponseWriter, req *http.Request) {
 
 func RegisterHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "RegisterHandler Page")
+}
+
+func addUser(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "addUser Page")
+}
+
+func deleteUser(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "deleteUser Page")
+}
+
+func updateUserinfo(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "updateUserinfo Page")
+}
+
+func findDonors(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "findDonors Page")
+}
+
+func listDonors(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "listDonors Page")
 }
