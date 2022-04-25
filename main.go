@@ -14,13 +14,11 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("static")))
 	mux.HandleFunc("/loginHandler", loginHandler)
-	mux.HandleFunc("/Register", Register)
 	mux.HandleFunc("/RegisterHandler", RegisterHandler)
-	mux.HandleFunc("/addUser", addUser)
 	mux.HandleFunc("/deleteUser", deleteUser)
 	mux.HandleFunc("/updateUserinfo", updateUserinfo)
 	mux.HandleFunc("/findDonors", findDonors)
-	mux.HandleFunc("listDonors", listDonors)
+	mux.HandleFunc("/listDonors", listDonors)
 	log.Fatal(http.ListenAndServe(":8000", mux)) // Listens for curl communication of localhost
 }
 
