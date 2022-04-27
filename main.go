@@ -144,8 +144,34 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 }
 
 func updateUserinfo(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "updateUserinfo Page")
+	//fmt.Fprintln(w, "updateUserinfo Page")
+		fmt.Fprintln(w, "updateUserinfo Page")
+	req.ParseForm()
+	username := req.FormValue("username")
+	password := req.FormValue("password")
+	bloodType := req.FormValue("bloodType")
+	contactNumber := req.FormValue("contactNumber")
+	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ",bloodType, "contactNumber:",contactNumber)
+	hashedPassword, err := HashPassword(password)
+	checkError(err)
 	
+	filter := bson.D{{"Username", username}}
+	
+
+	// Insert one
+	res, err := col.UpdateOne(ctx, filter, &Post{
+		Username :     username,          
+		Password :     hashedPassword,            
+		BloodType :    bloodBloodType,   
+		ContactNumber: contactNumber, 
+		Tag : "bloodDonors",
+	}
+	)
+	checkError(err)
+
+	if err == nil {
+		fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+	}
 	
 }
 
