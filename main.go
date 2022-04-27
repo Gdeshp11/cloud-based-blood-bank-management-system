@@ -96,9 +96,11 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		hash = p.Password
 	}
 
-	err := CheckPasswordHash(password,hash)
-	if err == true {
+	ok := CheckPasswordHash(password,hash)
+	if !ok {
 		fmt.Fprintln(w, "username or password is incorrect!")
+	} else {
+		fmt.Fprintln(w, "Login is successful!")
 	}
 	
 }
