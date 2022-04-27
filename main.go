@@ -133,11 +133,20 @@ func RegisterHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "deleteUser Page")
+	//fmt.Fprintln(w, "deleteUser Page")
+	username := req.FormValue("username")
+	res, err := col.DeleteMany(ctx, bson.M{"Username": username})
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Fprintln(w, "delete count: ", res.DeletedUser)
+	}
 }
 
 func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "updateUserinfo Page")
+	
+	
 }
 
 func findDonors(w http.ResponseWriter, req *http.Request) {
