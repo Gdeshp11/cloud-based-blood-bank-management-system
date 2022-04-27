@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -96,7 +97,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	err := CheckPasswordHash(password,hash)
-	if err != nil {
+	if err == true {
 		fmt.Fprintln(w, "username or password is incorrect!")
 	}
 	
@@ -118,12 +119,10 @@ func RegisterHandler(w http.ResponseWriter, req *http.Request) {
 		ID:            primitive.NewObjectID(),
 		Username :     username,          
 		Password :     hashedPassword,            
-		BloodType :    bloodBloodType,   
+		BloodType :    bloodType,   
 		ContactNumber: contactNumber, 
 		CreatedAt:     time.Time,   
-		Tag : "bloodDonors",
-	}
-	)
+		Tag : "bloodDonors"} )
 	checkError(err)
 
 	if err == nil {
@@ -162,11 +161,9 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	res, err := col.UpdateOne(ctx, filter, &Post{
 		Username :     username,          
 		Password :     hashedPassword,            
-		BloodType :    bloodBloodType,   
+		BloodType :    bloodType,   
 		ContactNumber: contactNumber, 
-		Tag : "bloodDonors",
-	}
-	)
+		Tag : "bloodDonors" } )
 	checkError(err)
 
 	if err == nil {
