@@ -26,6 +26,7 @@ type Post struct {
 	ContactNumber string             `bson:"contact_number"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	Tags          string             `bson:"tags"`
+	Location      string             `bson:location`
 }
 
 var ctx context.Context
@@ -135,11 +136,43 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "deleteUser Page")
+	//fmt.Fprintln(w, "deleteUser Page")
+	username := req.FormValue("username")
+	res, err := col.DeleteMany(ctx, bson.M{"Username": username})
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Fprintln(w, "delete count: ", res.DeletedUser)
+	}
 }
 
 func updateUserinfo(w http.ResponseWriter, req *http.Request) {
+	//fmt.Fprintln(w, "updateUserinfo Page")
 	fmt.Fprintln(w, "updateUserinfo Page")
+	req.ParseForm()
+	username := req.FormValue("username")
+	password := req.FormValue("password")
+	bloodType := req.FormValue("bloodType")
+	contactNumber := req.FormValue("contactNumber")
+	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
+	hashedPassword, err := HashPassword(password)
+	checkError(err)
+
+	filter := bson.D{{"Username", username}}
+
+	// Insert one
+	res, err := col.UpdateOne(ctx, filter, &Post{
+		Username:      username,
+		Password:      hashedPassword,
+		BloodType:     bloodType,
+		ContactNumber: contactNumber,
+		Tags:          "bloodDonors"})
+	checkError(err)
+
+	if err == nil {
+		fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+	}
+
 }
 
 func findDonors(w http.ResponseWriter, req *http.Request) {
