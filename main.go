@@ -139,7 +139,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	checkError(err)
 
 	if err == nil {
-		fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+		//fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
 	}
 
 }
@@ -151,7 +151,7 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Fprintln(w, "delete count: ", res.DeletedUser)
+		//fmt.Fprintln(w, "delete count: ", res.DeletedUser)
 	}
 }
 
