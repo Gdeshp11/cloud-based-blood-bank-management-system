@@ -113,6 +113,15 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	bloodType := req.FormValue("bloodType")
 	contactNumber := req.FormValue("contactNumber")
 	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
+
+	//check if username is available
+	filter := bson.M{"username": username}
+	var p Post
+	if err := col.FindOne(ctx, filter).Decode(&p); err == nil {
+		fmt.Fprintln(w, "username:", username, " is not available, please try different username")
+		return
+	}
+
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
 
@@ -150,9 +159,7 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintln(w, "updateUserinfo Page")
 	fmt.Fprintln(w, "updateUserinfo Page")
 	req.ParseForm()
-	username := req.FormValue("username")
 	password := req.FormValue("password")
-	bloodType := req.FormValue("bloodType")
 	contactNumber := req.FormValue("contactNumber")
 	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
 	hashedPassword, err := HashPassword(password)
