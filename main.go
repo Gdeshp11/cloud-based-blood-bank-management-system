@@ -24,9 +24,10 @@ type Post struct {
 	Password      string             `bson:"password"`
 	BloodType     string             `bson:"blood_type"`
 	ContactNumber string             `bson:"contact_number"`
+	Location      string             `bson:location`
+	DonationCount uint16             `bson:donation_count`
 	CreatedAt     time.Time          `bson:"created_at"`
 	Tags          string             `bson:"tags"`
-	Location      string             `bson:location`
 }
 
 var ctx context.Context
@@ -110,9 +111,10 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	username := req.FormValue("username")
 	password := req.FormValue("password")
+	contactNumber := req.FormValue("contact")
 	bloodType := req.FormValue("bloodType")
-	contactNumber := req.FormValue("contactNumber")
-	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
+	location := req.FormValue("location")
+	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber, "location:", location)
 
 	//check if username is available
 	filter := bson.M{"username": username}
@@ -140,6 +142,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 
 	if err == nil {
 		fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+		fmt.Fprintln(w, "user:", username, " is registered successfully!")
 	}
 
 }
