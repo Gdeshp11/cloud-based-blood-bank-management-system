@@ -62,6 +62,8 @@ func main() {
 	mux.HandleFunc("/updateUserinfo", updateUserinfo)
 	mux.HandleFunc("/findDonors", findDonors)
 	mux.HandleFunc("/listAllDonors", listDonors)
+	mux.HandleFunc("/requestBlood", requestBlood)
+	mux.HandleFunc("/makeDonation", makeDonation)
 	log.Fatal(http.ListenAndServe(":8000", mux)) // Listens for curl communication of localhost
 }
 
@@ -154,7 +156,7 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Fprintln(w, "delete count: ", res.DeletedUser)
+		//fmt.Fprintln(w, "delete count: ", res.DeletedUser)
 	}
 }
 
@@ -162,25 +164,29 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintln(w, "updateUserinfo Page")
 	fmt.Fprintln(w, "updateUserinfo Page")
 	req.ParseForm()
+	username := req.FormValue("username")
 	password := req.FormValue("password")
 	contactNumber := req.FormValue("contactNumber")
-	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
+	bloodType := req.FormValue("BloodType")
+	location := reg.FormValue("location")
+	fmt.Fprintln(w, "password:", password,"contactNumber:", contactNumber, )
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
+	
 
 	filter := bson.D{{"Username", username}}
 
 	// Insert one
 	res, err := col.UpdateOne(ctx, filter, &Post{
-		Username:      username,
 		Password:      hashedPassword,
-		BloodType:     bloodType,
 		ContactNumber: contactNumber,
+		BloodType:     bloodType,
+		Location:	   location,
 		Tags:          "bloodDonors"})
 	checkError(err)
 
 	if err == nil {
-		fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+		//fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
 	}
 
 }
@@ -190,5 +196,13 @@ func findDonors(w http.ResponseWriter, req *http.Request) {
 }
 
 func listDonors(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "listDonors Page")
+}
+
+func requestBlood(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "listDonors Page")
+}
+
+func makeDonation(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "listDonors Page")
 }
