@@ -156,7 +156,7 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		//fmt.Fprintln(w, "delete count: ", res.DeletedUser)
+		fmt.Fprintln(w, "delete count: ", res.DeletedCount)
 	}
 }
 
@@ -168,11 +168,10 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	password := req.FormValue("password")
 	contactNumber := req.FormValue("contactNumber")
 	bloodType := req.FormValue("BloodType")
-	location := reg.FormValue("location")
-	fmt.Fprintln(w, "password:", password,"contactNumber:", contactNumber, )
+	location := req.FormValue("location")
+	fmt.Fprintln(w, "password:", password, "contactNumber:", contactNumber)
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
-	
 
 	filter := bson.D{{"Username", username}}
 
@@ -181,12 +180,13 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 		Password:      hashedPassword,
 		ContactNumber: contactNumber,
 		BloodType:     bloodType,
-		Location:	   location,
+		Location:      location,
 		Tags:          "bloodDonors"})
-	checkError(err)
 
 	if err == nil {
-		//fmt.Printf("inserted id: %s\n", res.InsertedID.(primitive.ObjectID).Hex())
+		fmt.Println("update count: ", res.ModifiedCount)
+	} else {
+		fmt.Fprint(w, "Error:\n", err)
 	}
 
 }
