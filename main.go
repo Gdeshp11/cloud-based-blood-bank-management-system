@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -14,7 +15,7 @@ import (
 )
 
 const (
-	mongodbEndpoint = "mongodb://172.17.0.2:27017" // Find this from the Mongo container
+	mongodbEndpoint = "mongodb://localhost:27017" // Find this from the Mongo container
 )
 
 type Post struct {
@@ -24,7 +25,7 @@ type Post struct {
 	BloodType     string             `bson:"blood_type"`
 	ContactNumber string             `bson:"contact_number"`
 	CreatedAt     time.Time          `bson:"created_at"`
-	Tags         string              `bson:"tags"`
+	Tags          string             `bson:"tags"`
 }
 
 var ctx context.Context
@@ -54,7 +55,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("static")))
 	mux.HandleFunc("/loginHandler", loginHandler)
-	mux.HandleFunc("/RegisterHandler", RegisterHandler)
+	mux.HandleFunc("/registerHandler", registerHandler)
 	mux.HandleFunc("/deleteUser", deleteUser)
 	mux.HandleFunc("/updateUserinfo", updateUserinfo)
 	mux.HandleFunc("/findDonors", findDonors)
@@ -68,8 +69,8 @@ func HashPassword(password string) (string, error) {
 }
 
 func CheckPasswordHash(password, hash string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-    return err == nil
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func loginHandler(w http.ResponseWriter, req *http.Request) {
@@ -79,7 +80,6 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	password := req.FormValue("password")
 	fmt.Fprintln(w, "username:", username, "password:", password)
 
-
 	var hash string
 
 	filter := bson.M{"username": username}
@@ -87,43 +87,45 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	// find one document
 	var p Post
 	if err := col.FindOne(ctx, filter).Decode(&p); err != nil {
-		fmt.Fprintln(w, "user:",username," is not registered!") // if the item does not exist write and error
+		fmt.Fprintln(w, "user:", username, " is not registered!") // if the item does not exist write and error
 
 	} else {
 		fmt.Printf("post: %+v\n", p)
-		fmt.Fprintln(w, "hashed password of ",username, " : ",p.Password)
+		fmt.Fprintln(w, "hashed password of ", username, " : ", p.Password)
 		hash = p.Password
 	}
 
-	err := CheckPasswordHash(password,hash)
-	if err != nil {
+	ok := CheckPasswordHash(password, hash)
+	if !ok {
 		fmt.Fprintln(w, "username or password is incorrect!")
+	} else {
+		fmt.Fprintln(w, "Login Successful!")
 	}
-	
+
 }
 
-func RegisterHandler(w http.ResponseWriter, req *http.Request) {
+func registerHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "RegisterHandler Page")
 	req.ParseForm()
 	username := req.FormValue("username")
 	password := req.FormValue("password")
 	bloodType := req.FormValue("bloodType")
 	contactNumber := req.FormValue("contactNumber")
-	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ",bloodType, "contactNumber:",contactNumber)
+	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber)
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
 
 	// Insert one
 	res, err := col.InsertOne(ctx, &Post{
 		ID:            primitive.NewObjectID(),
-		Username :     username,          
-		Password :     hashedPassword,            
-		BloodType :    bloodBloodType,   
-		ContactNumber: contactNumber, 
-		CreatedAt:     time.Time,   
-		Tag : "bloodDonors",
-	}
-	)
+		Username:      username,
+		Password:      hashedPassword,
+		BloodType:     bloodType,
+		ContactNumber: contactNumber,
+		CreatedAt:     time.Now(),
+		Tags:          "bloodDonors",
+	})
+
 	checkError(err)
 
 	if err == nil {
