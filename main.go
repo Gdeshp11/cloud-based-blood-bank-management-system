@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -32,6 +34,7 @@ type Post struct {
 
 var ctx context.Context
 var col *mongo.Collection
+var tpl *template.Template
 
 func checkError(err error) {
 	if err != nil {
@@ -53,6 +56,8 @@ func main() {
 
 	// select collection from database
 	col = client.Database("bloodBankDatabase").Collection("users")
+
+	tpl, _ = template.ParseGlob("static/*.html")
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("static")))
@@ -78,11 +83,11 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 func loginHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "loginHandler Page")
+	// fmt.Fprintln(w, "loginHandler Page")
 	req.ParseForm()
 	username := req.FormValue("username")
 	password := req.FormValue("password")
-	fmt.Fprintln(w, "username:", username, "password:", password)
+	// fmt.Fprintln(w, "username:", username, "password:", password)
 
 	var hash string
 
@@ -91,11 +96,11 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	// find one document
 	var p Post
 	if err := col.FindOne(ctx, filter).Decode(&p); err != nil {
-		fmt.Fprintln(w, "user:", username, " is not registered!") // if the item does not exist write and error
+		// fmt.Fprintln(w, "user:", username, " is not registered!") // if the item does not exist write and error
 
 	} else {
 		fmt.Printf("post: %+v\n", p)
-		fmt.Fprintln(w, "hashed password of ", username, " : ", p.Password)
+		// fmt.Fprintln(w, "hashed password of ", username, " : ", p.Password)
 		hash = p.Password
 	}
 
@@ -103,7 +108,10 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		fmt.Fprintln(w, "username or password is incorrect!")
 	} else {
-		fmt.Fprintln(w, "Login Successful!")
+		// fmt.Fprintln(w, "Login Successful!")
+		// t = template.Must(template.ParseFiles(("static/update.html")))
+
+		tpl.ExecuteTemplate(w, "update.html", "Login Successful!")
 	}
 
 }
@@ -200,7 +208,34 @@ func listDonors(w http.ResponseWriter, req *http.Request) {
 }
 
 func requestBlood(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "listDonors Page")
+	req.ParseForm()
+	location := req.FormValue("Location")
+	bloodType := req.FormValue("BloodType")
+	// fmt.Fprintln(w, "bloodType: ", bloodType, "location:", location)
+
+	filter := bson.M{"blood_type": bloodType, "location": location}
+
+	cur, err := col.Find(ctx, filter)
+	if err != nil {
+		fmt.Fprintln(w, "find unsuccessful")
+	} else {
+		fmt.Fprintln(w, "find successful")
+	}
+
+	var results []bson.M
+	if err = cur.All(ctx, &results); err != nil {
+		fmt.Fprintln(w, "cur.All unsuccessful")
+	} else {
+		fmt.Fprintln(w, "cur.All successful")
+	}
+	for _, result := range results {
+		fmt.Fprintln(w, "in for..")
+		output, err := json.MarshalIndent(result, "", "    ")
+		if err != nil {
+			fmt.Fprintln(w, "json.MarshalIndent unsuccessful")
+		}
+		fmt.Fprintln(w, output)
+	}
 }
 
 func makeDonation(w http.ResponseWriter, req *http.Request) {
