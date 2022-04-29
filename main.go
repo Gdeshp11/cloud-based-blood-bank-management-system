@@ -220,24 +220,30 @@ func requestBlood(w http.ResponseWriter, req *http.Request) {
 	// fmt.Println("bloodType: ", bloodType, "location:", location)
 
 	filter := bson.M{"blood_type": bloodType, "location": location}
+	opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", -1}})
+	update := bson.M{"$inc": bson.M{"eval": -1}}
 
-	cur, err := col.Find(ctx, filter)
+	err := col.FindOneAndUpdate(ctx, filter, update, opts)
 	if err != nil {
 		fmt.Fprintln(w, "find unsuccessful")
 	} else {
 		fmt.Fprintln(w, "find successful")
 	}
 
-	var results []bson.M
-	if err = cur.All(ctx, &results); err != nil {
-		fmt.Fprintln(w, "cur.All unsuccessful")
-	} else {
-		fmt.Fprintln(w, "cur.All successful")
-	}
-
-	fmt.Fprintln(w, results)
 }
 
 func makeDonation(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "listDonors Page")
+	//fmt.Fprintln(w, "listDonors Page")
+	req.ParseForm()
+	username := req.FormValue("username")
+	opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", -1}})
+	update := bson.M{"$inc": bson.M{"eval": 1}}
+
+	err := col.FindOneAndUpdate(ctx, bson.M{"username": username}, update, opts)
+	if err != nil {
+		fmt.Fprintln(w, "find unsuccessful")
+	} else {
+		fmt.Fprintln(w, "find successful")
+	}
+
 }

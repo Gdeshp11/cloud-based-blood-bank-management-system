@@ -6,17 +6,28 @@
 
 
 <form action="/requestBlood" method="POST">
-	<label for="bloodtype">Blood Type:</label><br><br>
-        <label for="bloodtype">Blood Type:</label><br>
-        <input type="text" id="bloodtype" name="bloodtype"><br><br>
-        <select name="locations" id="locations">
+	<label for="bloodtype">Blood Type requested:</label><br><br>
+        <select name="bloodtype" id="bloodtype">
+            <option value="A-">A-</option>
+            <option value="A+">A+</option>
+            <option value="B-">B-</option>
+            <option value="B+">B+</option>
+            <option value="AB-">AB-</option>
+            <option value="AB+">AB+</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            </select><br><br>
+
+    <label for="location">Preferred Location for blood donation:</label><br><br>
+        <select name="Location" id="location">
             <option value="location1">location1</option>
             <option value="location2">location2</option>
             <option value="location3">location3</option>
             <option value="location4">location4</option>
-            </select>
-    <input type="submit" value="Request Blood">
+            </select><br><br>
+<input type="submit" value="Request Blood">
 </form> 
+
 
 </body>
 </html>
