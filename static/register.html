@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
-<body>
 
-<h1>Donor Registration</h1>
+<body>
+    <style>
+        body {
+            background-image: url('images/background.png');
+            background-size: cover;
+        }
+    </style>
+    <h1>Donor Registration</h1>
     <form action="/registerHandler" method="POST">
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username"><br><br>
@@ -11,7 +17,7 @@
         <label for="contact">Contact:</label><br>
         <input type="text" id="contact" name="contact"><br><br>
         <label for="bloodtype">Blood Type requested:</label><br>
-        <select name="BloodType" id="BloodType">
+        <select name="bloodtype" id="bloodtype">
             <option value="A-">A-</option>
             <option value="A+">A+</option>
             <option value="B-">B-</option>
@@ -20,16 +26,17 @@
             <option value="AB+">AB+</option>
             <option value="O+">O+</option>
             <option value="O-">O-</option>
-            </select><br><br>
-        <label for="location">Preferred Location for blood donation:</label><br>
-        <select name="Location" id="location">
-        <option value="location1">location1</option>
-        <option value="location2">location2</option>
-        <option value="location3">location3</option>
-        <option value="location4">location4</option>
+        </select><br><br>
+        <label for="locations">Preferred Location for blood donation:</label><br>
+        <select name="Locations" id="locations">
+            <option value="location1">location1</option>
+            <option value="location2">location2</option>
+            <option value="location3">location3</option>
+            <option value="location4">location4</option>
         </select><br><br>
         <input type="submit" value="Register">
     </form>
-    
+
 </body>
+
 </html>

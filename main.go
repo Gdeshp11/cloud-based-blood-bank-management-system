@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	mongodbEndpoint = "mongodb://localhost:27017" // Find this from the Mongo container
+	mongodbEndpoint = "mongodb://localhost:27017"
 )
 
 type Post struct {
@@ -223,11 +223,19 @@ func requestBlood(w http.ResponseWriter, req *http.Request) {
 	opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", -1}})
 	update := bson.M{"$inc": bson.M{"eval": -1}}
 
-	err := col.FindOneAndUpdate(ctx, filter, update, opts)
+	var donorInfo Post
+	err := col.FindOneAndUpdate(ctx, filter, update, opts).Decode(&donorInfo)
 	if err != nil {
-		fmt.Fprintln(w, "find unsuccessful")
+		fmt.Fprintln(w, "No results found for requested search criteria")
+
 	} else {
-		fmt.Fprintln(w, "find successful")
+		if donorInfo.DonationCount > 0 {
+			fmt.Println("Updated Donation count after request blood: ", donorInfo.DonationCount)
+			fmt.Fprintln(w, "Requested blood is available, please find details below:")
+			fmt.Fprintln(w, "Contact:", donorInfo.ContactNumber, "Location:", donorInfo.Location)
+		} else {
+			fmt.Fprintln(w, "No results found for requested search criteria")
+		}
 	}
 
 }
@@ -236,14 +244,16 @@ func makeDonation(w http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintln(w, "listDonors Page")
 	req.ParseForm()
 	username := req.FormValue("username")
-	opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", -1}})
-	update := bson.M{"$inc": bson.M{"eval": 1}}
+	// opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", 1}})
+	update := bson.M{"$inc": bson.M{"eval": +1}}
 
-	err := col.FindOneAndUpdate(ctx, bson.M{"username": username}, update, opts)
+	var donorInfo Post
+
+	err := col.FindOneAndUpdate(ctx, bson.M{"username": username}, update).Decode(&donorInfo)
 	if err != nil {
-		fmt.Fprintln(w, "find unsuccessful")
+		fmt.Fprintln(w, "Could not update donation count for user:", username)
 	} else {
-		fmt.Fprintln(w, "find successful")
+		fmt.Fprintln(w, "make donation request successful! \nupdated donation count for ", username, " : ", donorInfo.DonationCount)
 	}
 
 }

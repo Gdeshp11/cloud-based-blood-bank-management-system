@@ -3,6 +3,13 @@
 
 <body>
 
+    <style>
+        body {
+            background-image: url('images/background.png');
+            background-size: cover;
+        }
+    </style>
+
     <h1>Blood Bank Management System</h1>
     <h2>Donor Login</h2>
     <form action="/loginHandler" method="POST">
@@ -15,11 +22,11 @@
     <br>
 
     <form action="register.html">
-        <label for="newAccount">New donor?</label><br><br>
+        <label for="newAccount">New donor:</label>
         <input type="submit" value="Register Here" />
-    </form>
-	
-	<form action="requestblood.html">
-        <label for="bloodrequest">Request Blood?</label><br><br>
-        <input type="submit" value="Press here" />
+    </form><br><br>
+
+    <form action="requestblood.html">
+        <label for="bloodrequest">Request Blood:</label>
+        <input type="submit" value="Click here" />
     </form>

@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html>
+
 <body>
 
-<h2>Welcome {{.Username}}</h2><br>
+    <h2>Welcome {{.Username}}</h2><br>
+    <style>
+        body {
+            background-image: url('images/background.png');
+            background-size: cover;
+        }
+    </style>
+    <form action="update.html" method="POST">
+        <input type="submit" value="Update Your Account Information">
+    </form><br>
 
-<form action="update.html" method="POST">
-    <input type="submit" value="Update Your Account Information">
-</form><br>
+    <form action="/deleteUser" method="POST">
+        <input type="hidden" id="username" name="username" value={{ .Username }}>
+        <input type="submit" value="Delete Your Account">
 
-<form action="/deleteUser" method="POST">
-    <input type="hidden" id="username" name="username" value={{ .Username }}>
-    <input type="submit" value="Delete Your Account">
+    </form><br>
 
-</form><br>
-
-<form action="/makeDonation" method="POST">
-    <input type="submit" value="Make a Blood Donation">
-</form><br>
+    <form action="/makeDonation" method="POST">
+        <input type="hidden" id="username" name="username" value={{ .Username }}>
+        <input type="submit" value="Make a Blood Donation">
+    </form><br>
 
 </body>
+
 </html>
