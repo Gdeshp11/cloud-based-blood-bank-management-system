@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -126,8 +125,8 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")
 	password := req.FormValue("password")
 	contactNumber := req.FormValue("contact")
-	bloodType := req.FormValue("bloodType")
-	location := req.FormValue("location")
+	bloodType := req.FormValue("bloodtype")
+	location := req.FormValue("locations")
 	fmt.Println(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber, "location:", location)
 
 	//check if username is available
@@ -216,9 +215,9 @@ func listDonors(w http.ResponseWriter, req *http.Request) {
 
 func requestBlood(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
-	location := req.FormValue("Location")
-	bloodType := req.FormValue("BloodType")
-	// fmt.Fprintln(w, "bloodType: ", bloodType, "location:", location)
+	location := req.FormValue("locations")
+	bloodType := req.FormValue("bloodtype")
+	// fmt.Println("bloodType: ", bloodType, "location:", location)
 
 	filter := bson.M{"blood_type": bloodType, "location": location}
 
@@ -235,14 +234,8 @@ func requestBlood(w http.ResponseWriter, req *http.Request) {
 	} else {
 		fmt.Fprintln(w, "cur.All successful")
 	}
-	for _, result := range results {
-		fmt.Fprintln(w, "in for..")
-		output, err := json.MarshalIndent(result, "", "    ")
-		if err != nil {
-			fmt.Fprintln(w, "json.MarshalIndent unsuccessful")
-		}
-		fmt.Fprintln(w, output)
-	}
+
+	fmt.Fprintln(w, results)
 }
 
 func makeDonation(w http.ResponseWriter, req *http.Request) {
