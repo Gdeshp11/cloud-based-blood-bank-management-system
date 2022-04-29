@@ -2,19 +2,19 @@
 <html>
 <body>
 
-<h2>Welcome User</h2><br>
+<h2>Welcome {{.Username}}</h2><br>
 
 <form action="update.html" method="POST">
     <input type="submit" value="Update Your Account Information">
-</form>
+</form><br>
 
 <form action="/deleteUser" method="POST">
     <input type="submit" value="Delete Your Account">
-</form> 
+</form><br>
 
 <form action="/makeDonation" method="POST">
     <input type="submit" value="Make a Blood Donation">
-</form>
+</form><br>
 
 </body>
 </html>

@@ -82,16 +82,20 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
+type loginPageData struct {
+	Username string
+}
+
 func loginHandler(w http.ResponseWriter, req *http.Request) {
 	// fmt.Fprintln(w, "loginHandler Page")
 	req.ParseForm()
-	username := req.FormValue("username")
+	Username := req.FormValue("username")
 	password := req.FormValue("password")
 	// fmt.Fprintln(w, "username:", username, "password:", password)
-
+	data := loginPageData{Username}
 	var hash string
 
-	filter := bson.M{"username": username}
+	filter := bson.M{"username": Username}
 
 	// find one document
 	var p Post
@@ -111,7 +115,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		// fmt.Fprintln(w, "Login Successful!")
 		// t = template.Must(template.ParseFiles(("static/update.html")))
 
-		tpl.ExecuteTemplate(w, "update.html", "Login Successful!")
+		tpl.ExecuteTemplate(w, "splash.html", data)
 	}
 
 }
@@ -124,7 +128,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	contactNumber := req.FormValue("contact")
 	bloodType := req.FormValue("bloodType")
 	location := req.FormValue("location")
-	fmt.Fprintln(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber, "location:", location)
+	fmt.Println(w, "username:", username, "password:", password, "bloodType: ", bloodType, "contactNumber:", contactNumber, "location:", location)
 
 	//check if username is available
 	filter := bson.M{"username": username}
