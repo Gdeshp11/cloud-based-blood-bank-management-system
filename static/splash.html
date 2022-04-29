@@ -9,7 +9,9 @@
 </form><br>
 
 <form action="/deleteUser" method="POST">
+    <input type="hidden" id="username" name="username" value={{ .Username }}>
     <input type="submit" value="Delete Your Account">
+
 </form><br>
 
 <form action="/makeDonation" method="POST">

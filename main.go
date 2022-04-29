@@ -26,8 +26,8 @@ type Post struct {
 	Password      string             `bson:"password"`
 	BloodType     string             `bson:"blood_type"`
 	ContactNumber string             `bson:"contact_number"`
-	Location      string             `bson:location`
-	DonationCount uint16             `bson:donation_count`
+	Location      string             `bson:"location"`
+	DonationCount uint16             `bson:"donation_count"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	Tags          string             `bson:"tags"`
 }
@@ -148,8 +148,10 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 		Password:      hashedPassword,
 		BloodType:     bloodType,
 		ContactNumber: contactNumber,
+		Location:      location,
 		CreatedAt:     time.Now(),
 		Tags:          "bloodDonors",
+		DonationCount: 1,
 	})
 
 	checkError(err)
@@ -164,7 +166,8 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 func deleteUser(w http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintln(w, "deleteUser Page")
 	username := req.FormValue("username")
-	res, err := col.DeleteMany(ctx, bson.M{"Username": username})
+	fmt.Fprintln(w, "username: ", username)
+	res, err := col.DeleteMany(ctx, bson.M{"username": username})
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -185,7 +188,7 @@ func updateUserinfo(w http.ResponseWriter, req *http.Request) {
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
 
-	filter := bson.D{{"Username", username}}
+	filter := bson.D{{"username", username}}
 
 	// Insert one
 	res, err := col.UpdateOne(ctx, filter, &Post{
