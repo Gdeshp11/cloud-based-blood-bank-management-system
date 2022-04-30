@@ -8,16 +8,11 @@
             background-size: cover;
         }
     </style>
-    <h1>User Registration</h1>
-    <form action="/registerHandler" method="POST">
-        <label for="username">Choose Username:</label><br><br>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Choose Password:</label><br><br>
-        <input type="password" id="password" name="password" required><br><br>
-        <label for="contact">Contact Number</label>
-        <small>(Format: 888-888-8888):</small><br><br>
-        <input type="tel" id="contact" name="contact" placeholder="888-888-8888" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><br>
-        <label for="bloodtype">Your Blood Type:</label>
+
+    <h3>Please fill below details to request blood:</h3>
+
+    <form action="/requestBlood" method="POST">
+        <label for="bloodtype">Blood Type:</label>
         <select name="bloodtype" id="bloodtype">
             <option value="A-">A-</option>
             <option value="A+">A+</option>
@@ -27,16 +22,18 @@
             <option value="AB+">AB+</option>
             <option value="O+">O+</option>
             <option value="O-">O-</option>
-        </select><br><br>
-        <label for="locations">Preferred Location for blood donation:</label>
+        </select>
+
+        <label for="locations">Preferred Location:</label>
         <select name="locations" id="locations">
             <option value="location1">location1</option>
             <option value="location2">location2</option>
             <option value="location3">location3</option>
             <option value="location4">location4</option>
         </select><br><br>
-        <input type="submit" value="Register">
+        <input type="submit" value="Check Availability">
     </form>
+
 
 </body>
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>Update Account Information</h2>
+    <style>
+        body {
+            background-image: url('images/background.png');
+            background-size: cover;
+        }
+    </style>
+    <form action="/updateuserinfo" method="POST">
+        <input type="hidden" id="username" name="username" value={{ .Username }}>
+        <label for="password">Password:</label><br><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="locations">Preferred Location:</label><br><br>
+        <select name="locations" id="locations">
+            <option value="location1">location1</option>
+            <option value="location2">location2</option>
+            <option value="location3">location3</option>
+            <option value="location4">location4</option>
+        </select><br><br>
+        <label for="number">Contact Number</label>
+        <small>(Format: 888-888-8888):</small><br><br>
+        <input type="tel" id="phone" name="phone" placeholder="888-888-8888" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+</html>
