@@ -8,15 +8,16 @@
             background-size: cover;
         }
     </style>
-    <h1>Donor Registration</h1>
+    <h1>User Registration</h1>
     <form action="/registerHandler" method="POST">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <label for="contact">Contact:</label><br>
-        <input type="text" id="contact" name="contact"><br><br>
-        <label for="bloodtype">Blood Type requested:</label><br>
+        <label for="username">Choose Username:</label><br><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Choose Password:</label><br><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="contact">Contact Number</label>
+        <small>(Format: 888-888-8888):</small><br><br>
+        <input type="tel" id="contact" name="contact" placeholder="888-888-8888" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><br>
+        <label for="bloodtype">Your Blood Type:</label>
         <select name="bloodtype" id="bloodtype">
             <option value="A-">A-</option>
             <option value="A+">A+</option>
@@ -27,8 +28,8 @@
             <option value="O+">O+</option>
             <option value="O-">O-</option>
         </select><br><br>
-        <label for="locations">Preferred Location for blood donation:</label><br>
-        <select name="Locations" id="locations">
+        <label for="locations">Preferred Location for blood donation:</label>
+        <select name="locations" id="locations">
             <option value="location1">location1</option>
             <option value="location2">location2</option>
             <option value="location3">location3</option>

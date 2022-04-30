@@ -8,10 +8,11 @@
             background-size: cover;
         }
     </style>
-    <h2>Please Select</h2><br>
+
+    <h3>Please fill below details to request blood:</h3>
 
     <form action="/requestBlood" method="POST">
-        <label for="bloodtype">Blood Type:</label><br><br>
+        <label for="bloodtype">Blood Type:</label>
         <select name="bloodtype" id="bloodtype">
             <option value="A-">A-</option>
             <option value="A+">A+</option>
@@ -21,16 +22,16 @@
             <option value="AB+">AB+</option>
             <option value="O+">O+</option>
             <option value="O-">O-</option>
-        </select><br><br>
+        </select>
 
-        <label for="locations">Preferred Location:</label><br><br>
+        <label for="locations">Preferred Location:</label>
         <select name="locations" id="locations">
             <option value="location1">location1</option>
             <option value="location2">location2</option>
             <option value="location3">location3</option>
             <option value="location4">location4</option>
         </select><br><br>
-        <input type="submit" value="Request Blood">
+        <input type="submit" value="Check Availability">
     </form>
 
 

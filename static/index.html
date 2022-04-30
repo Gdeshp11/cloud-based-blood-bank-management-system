@@ -11,22 +11,21 @@
     </style>
 
     <h1>Blood Bank Management System</h1>
-    <h2>Donor Login</h2>
+    <h1>Request or Donate Blood </h1>
+    <h2>New User? click on Register:</h2>
+    <form action="register.html">
+        <input type="submit" value="Register" />
+    </form>
+
+    <h2>Registered Users Login:</h2>
     <form action="/loginHandler" method="POST">
         <label for="username">Username:</label><br><br>
-        <input type="text" id="username" name="username"><br><br>
+        <input type="text" id="username" name="username"required><br><br>
         <label for="password">Password:</label><br><br>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Submit"><br><br>
+        <input type="password" id="password" name="password"required><br><br>
+        <input type="submit" value="Login"><br><br>
     </form>
-    <br>
 
-    <form action="register.html">
-        <label for="newAccount">New donor:</label>
-        <input type="submit" value="Register Here" />
-    </form><br><br>
+    
 
-    <form action="requestblood.html">
-        <label for="bloodrequest">Request Blood:</label>
-        <input type="submit" value="Click here" />
-    </form>
+    

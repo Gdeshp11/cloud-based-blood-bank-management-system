@@ -11,7 +11,7 @@
         }
     </style>
     <form action="update.html" method="POST">
-        <input type="submit" value="Update Your Account Information">
+        <input type="submit" value="Update Your Information">
     </form><br>
 
     <form action="/deleteUser" method="POST">
@@ -22,8 +22,12 @@
 
     <form action="/makeDonation" method="POST">
         <input type="hidden" id="username" name="username" value={{ .Username }}>
-        <input type="submit" value="Make a Blood Donation">
+        <input type="submit" value="Donate Blood">
     </form><br>
+
+    <form action="requestblood.html">
+        <input type="submit" value="Request Blood" />
+    </form>
 
 </body>
 
