@@ -66,7 +66,7 @@ func main() {
 	mux.HandleFunc("/listAllDonors", listAllDonors)
 	mux.HandleFunc("/requestBlood", requestBlood)
 	mux.HandleFunc("/makeDonation", makeDonation)
-	log.Fatal(http.ListenAndServe(":8000", mux)) // Listens for curl communication of localhost
+	log.Fatal(http.ListenAndServe(":8000", mux))
 }
 
 func HashPassword(password string) (string, error) {
@@ -84,20 +84,17 @@ type loginPageData struct {
 }
 
 func loginHandler(w http.ResponseWriter, req *http.Request) {
-	// fmt.Fprintln(w, "loginHandler Page")
 	req.ParseForm()
 	username := req.FormValue("username")
 	password := req.FormValue("password")
-	// fmt.Fprintln(w, "username:", username, "password:", password)
 	data := loginPageData{username}
 	var hash string
 
 	filter := bson.M{"username": username}
 
-	// find one document
 	var p userData
 	if err := col.FindOne(ctx, filter).Decode(&p); err != nil {
-		fmt.Fprintln(w, "user:", username, " is not registered") // if the item does not exist write and error
+		fmt.Fprintln(w, "user:", username, " is not registered")
 		return
 	} else {
 		fmt.Printf("userData: %+v\n", p)
@@ -134,7 +131,6 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 	hashedPassword, err := HashPassword(password)
 	checkError(err)
 
-	// Insert one
 	res, err := col.InsertOne(ctx, &userData{
 		ID:            primitive.NewObjectID(),
 		Username:      username,
@@ -143,7 +139,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 		ContactNumber: contactNumber,
 		Location:      location,
 		CreatedAt:     time.Now(),
-		DonationCount: 1,
+		DonationCount: 0,
 	})
 
 	if err == nil {
@@ -169,7 +165,6 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 }
 
 func updateUserinfo(w http.ResponseWriter, req *http.Request) {
-	// fmt.Fprintln(w, "updateUserinfo Page")
 	req.ParseForm()
 	username := req.FormValue("username")
 	password := req.FormValue("password")
@@ -204,17 +199,12 @@ func requestBlood(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	location := req.FormValue("locations")
 	bloodType := req.FormValue("bloodtype")
-	// fmt.Println("bloodType: ", bloodType, "location:", location)
 
 	filter := bson.M{"blood_type": bloodType, "location": location}
-	// opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", -1}})
-	// update := bson.M{"$inc": bson.M{"donation_count": -1}}
 
 	var donorInfo userData
-	// err := col.FindOneAndUpdate(ctx, filter, update, opts).Decode(&donorInfo)
 	curr, err := col.Find(ctx, filter)
 	defer curr.Close(ctx)
-	// err = curr.Decode(&donorInfo)
 	if err != nil {
 		fmt.Fprintln(w, "No results found for requested search criteria")
 		return
@@ -225,35 +215,21 @@ func requestBlood(w http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				fmt.Fprintln(w, "Error in Decoding")
 				return
-			} else {
+			} else if donorInfo.DonationCount > 0 {
 				fmt.Fprintln(w, "---------------------+---------------------")
 				fmt.Fprintln(w, "Contact:", donorInfo.ContactNumber, "Location:", donorInfo.Location)
+			} else {
+				fmt.Fprintln(w, "No results found for requested search criteria")
 			}
 		}
 	}
 
-	// if err != nil {
-	// 	fmt.Fprintln(w, "No results found for requested search criteria")
-
-	// } else {
-
-	// 	if donorInfo.DonationCount > 0 {
-	// 		fmt.Println("Updated Donation count after request blood: ", donorInfo.DonationCount)
-	// 		fmt.Fprintln(w, "Blood Donors Available, Please find details below:")
-	// 		fmt.Fprintln(w, "Contact:", donorInfo.ContactNumber, "Location:", donorInfo.Location)
-	// 		fmt.Fprintln(w, donorInfo)
-	// 	} else {
-	// 		fmt.Fprintln(w, "No results found for requested search criteria")
-	// 	}
-	// }
-
 }
 
 func makeDonation(w http.ResponseWriter, req *http.Request) {
-	//fmt.Fprintln(w, "listDonors Page")
+
 	req.ParseForm()
 	username := req.FormValue("username")
-	// opts := options.FindOneAndUpdate().SetSort(bson.D{{"donation_count", 1}})
 	update := bson.M{"$inc": bson.M{"donation_count": +1}}
 
 	var donorInfo userData
